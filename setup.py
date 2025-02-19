@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="pynifs",
-    version="0.1.1",
+    version="0.1.2",
     description="Unified file access interface",
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -14,5 +14,7 @@ setuptools.setup(
     install_requires=[
         "pydantic==2.10.6",
         "boto3==1.36.21",
+        "boto3-stubs[s3]==1.36.21",
+        "urllib3==2.3.0",
     ],
 )
