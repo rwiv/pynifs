@@ -9,12 +9,13 @@ from .s3_config import S3Config
 from .s3_responses import S3ObjectInfoResponse, S3ListResponse
 from .s3_utils import to_dir_path
 from ..abstract import FsAccessor
-from ..types import FileInfo
+from ..types import FileInfo, FsType
 from ..utils import filename
 
 
 class S3FsAccessor(FsAccessor):
     def __init__(self, config: S3Config):
+        super().__init__(FsType.S3)
         self.config = config
         self.bucket_name = config.bucket_name
         self.__s3 = self.__get_client()

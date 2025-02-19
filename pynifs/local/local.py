@@ -4,12 +4,13 @@ from io import IOBase
 from pathlib import Path
 
 from ..abstract import FsAccessor
-from ..types import FileInfo
+from ..types import FileInfo, FsType
 from ..utils import path_join
 
 
 class LocalFsAccessor(FsAccessor):
     def __init__(self, chunk_size=4096):
+        super().__init__(FsType.LOCAL)
         self.chunk_size = chunk_size
 
     def normalize_base_path(self, base_path: str) -> str:
