@@ -43,6 +43,14 @@ class LocalFsAccessor(FsAccessor):
         os.makedirs(dir_path, exist_ok=True)
 
     def rmdir(self, dir_path: str):
+        if dir_path == "" or dir_path == "/":
+            raise ValueError("Cannot remove root directory")
+        info = self.head(dir_path)
+        if info is None:
+            raise FileNotFoundError("No such file or directory: '%s'" % dir_path)
+        self.__rmdir(dir_path)
+
+    def __rmdir(self, dir_path: str):
         children = self.get_list(dir_path)
         if len(children) == 0:
             return
@@ -54,14 +62,6 @@ class LocalFsAccessor(FsAccessor):
         if dir_path == "" or dir_path == "/":
             return
         self.delete(dir_path)
-
-    def rmdir(self, dir_path: str):
-        if dir_path == "" or dir_path == "/":
-            raise ValueError("Cannot remove root directory")
-        info = self.head(dir_path)
-        if info is None:
-            raise FileNotFoundError("No such file or directory: '%s'" % dir_path)
-        super().rmdir(dir_path)
 
     def read(self, path: str) -> IOBase:
         file_obj = open(path, "rb")

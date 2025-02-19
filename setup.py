@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="pynifs",
-    version="0.1.0",
+    version="0.1.1",
     description="Unified file access interface",
     long_description=long_description,
     long_description_content_type="text/markdown",
