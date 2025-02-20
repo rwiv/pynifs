@@ -54,13 +54,13 @@ class S3ListPrefixObject(BaseModel):
 
 class S3ListResponse(BaseModel):
     meta: Any = Field(alias="ResponseMetadata")
-    contents: list[S3ListContentObject] | None = Field(alias="Contents")
-    prefixes: list[S3ListPrefixObject] | None = Field(alias="CommonPrefixes")
+    key_count: int = Field(alias="KeyCount")
+    is_truncated: bool = Field(alias="IsTruncated")
+    continuation_token: str | None = Field(alias="ContinuationToken",  default=None)
+    next_continuation_token: str | None = Field(alias="NextContinuationToken", default=None)
+    contents: list[S3ListContentObject] | None = Field(alias="Contents", default=None)
+    prefixes: list[S3ListPrefixObject] | None = Field(alias="CommonPrefixes", default=None)
 
     @staticmethod
     def new(d: Any):
-        if "Contents" not in d:
-            d["Contents"] = None
-        if "CommonPrefixes" not in d:
-            d["CommonPrefixes"] = None
         return S3ListResponse(**d)

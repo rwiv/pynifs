@@ -1,10 +1,10 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, constr
 
 
 class S3Config(BaseModel):
-    name: str = Field(min_length=1)
-    endpoint_url: str = Field(min_length=1, alias="endpointUrl")
-    access_key: str = Field(min_length=1, alias="accessKey")
-    secret_key: str = Field(min_length=1, alias="secretKey")
+    name: constr(min_length=1)
+    endpoint_url: constr(min_length=1) = Field(alias="endpointUrl")
+    access_key: constr(min_length=1) = Field(alias="accessKey")
+    secret_key: constr(min_length=1) = Field(alias="secretKey")
     verify: bool
-    bucket_name: str = Field(min_length=1, alias="bucketName")
+    bucket_name: constr(min_length=1) = Field(alias="bucketName")
