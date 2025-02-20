@@ -8,7 +8,7 @@ from .types import FileInfo, FsType
 class FsAccessor(ABC):
     def __init__(self, fs_type: FsType):
         self.fs_type = fs_type
-    
+
     @abstractmethod
     def normalize_base_path(self, base_path: str) -> str:
         pass

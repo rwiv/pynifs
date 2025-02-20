@@ -1,4 +1,5 @@
 import os
+import shutil
 from datetime import datetime
 from io import IOBase
 from pathlib import Path
@@ -46,23 +47,9 @@ class LocalFsAccessor(FsAccessor):
     def rmdir(self, dir_path: str):
         if dir_path == "" or dir_path == "/":
             raise ValueError("Cannot remove root directory")
-        info = self.head(dir_path)
-        if info is None:
+        if Path(dir_path).exists() is False:
             raise FileNotFoundError("No such file or directory: '%s'" % dir_path)
-        self.__rmdir(dir_path)
-
-    def __rmdir(self, dir_path: str):
-        children = self.get_list(dir_path)
-        if len(children) == 0:
-            return
-        for c in children:
-            if c.is_dir:
-                self.rmdir(c.path)
-            else:
-                self.delete(c.path)
-        if dir_path == "" or dir_path == "/":
-            return
-        self.delete(dir_path)
+        shutil.rmtree(dir_path)
 
     def read(self, path: str) -> IOBase:
         file_obj = open(path, "rb")

@@ -24,6 +24,15 @@ class S3FsAccessor(FsAccessor):
         return filename(base_path, "/")
 
     def head(self, path: str) -> FileInfo | None:
+        file_head = self.__head(path)
+        if file_head is not None:
+            return file_head
+        dir_head = self.__head(to_dir_path(path))
+        if dir_head is not None:
+            return dir_head
+        return None
+
+    def __head(self, path: str) -> FileInfo | None:
         try:
             s3_res = self.__s3.head_object(Bucket=self.bucket_name, Key=path)
             return S3ObjectInfoResponse.new(s3_res, key=path).to_file_info()
@@ -44,7 +53,9 @@ class S3FsAccessor(FsAccessor):
         return result
 
     def __get_keys(self, dir_path: str) -> list[str]:
-        s3_res = self.__s3.list_objects_v2(Bucket=self.bucket_name, Prefix=to_dir_path(dir_path), Delimiter="/")
+        s3_res = self.__s3.list_objects_v2(
+            Bucket=self.bucket_name, Prefix=to_dir_path(dir_path), Delimiter="/"
+        )
         res = S3ListResponse.new(s3_res)
         result = []
         if res.prefixes:
@@ -73,13 +84,12 @@ class S3FsAccessor(FsAccessor):
 
     def rmdir(self, dir_path: str):
         children = self.get_list(dir_path)
-        if len(children) == 0:
-            return
-        for c in children:
-            if c.is_dir:
-                self.rmdir(c.path)
-            else:
-                self.delete(c.path)
+        if len(children) > 0:
+            for c in children:
+                if c.is_dir:
+                    self.rmdir(c.path)
+                else:
+                    self.delete(c.path)
         if dir_path == "" or dir_path == "/":
             return
         self.delete(to_dir_path(dir_path))
